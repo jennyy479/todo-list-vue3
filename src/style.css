@@ -77,6 +77,10 @@ button:focus-visible {
   text-align: center;
 }
 
+button:focus, button:focus-visible {
+  outline: 0!important;
+}
+
 .checkbox-wrapper-46 input[type="checkbox"] {
   display: none;
   visibility: hidden;
@@ -153,4 +157,80 @@ button:focus-visible {
   50% {
     transform: scale(0.9);
   }
+}
+
+.button-13 {
+  background-color: #fff;
+  box-sizing: border-box;
+  color: #6B7280;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Amazon Ember",sans-serif;
+  font-size: 12px;
+  line-height: 29px;
+  padding: 0 10px 0 11px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  width: auto;
+}
+
+.button-13:hover {
+  background-color: #f7fafa;
+}
+
+.button-13:focus {
+  background-color:  #a3a7b0;
+  color: #fff;
+  border: 1px solid #d5d9d9;
+  border-radius: 8px;
+}
+
+.input-container {
+  position: relative;
+}
+
+.input-field {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  outline: none;
+  background-color: transparent;
+}
+
+.input-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 16px;
+  color: rgba(204, 204, 204, 0);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.input-highlight {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background-color: #9098A9;
+  transition: all 0.3s ease;
+}
+
+.input-field:focus + .input-label {
+  top: -20px;
+  font-size: 12px;
+  color: #9098A9;
+}
+
+.input-field:focus + .input-label + .input-highlight {
+  width: 100%;
 }

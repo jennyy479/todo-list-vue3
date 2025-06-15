@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 
 export interface TodoItem {
@@ -10,6 +10,9 @@ export interface TodoItem {
 export const useTodoStore = defineStore('todo', () => { 
   const todos = ref<TodoItem[]>([])
 
+  const resortTodos = computed(() => {
+    return todos.value.slice().sort((a, b) => Number(a.done) - Number(b.done))
+  })
   const addTodo = (text: string) => {
     todos.value.push({
       id: Date.now(),
@@ -22,14 +25,16 @@ export const useTodoStore = defineStore('todo', () => {
    console.log(todos.value, text)
   }
 
-  const removeTodo = (id: string) => {
-
+  const removeTodo = (id: number) => {
+    const index = todos.value.findIndex((todo) => todo.id === id)
+    todos.value.splice(index, 1)
   };
 
   return {
     addTodo,
     editTodo,
     removeTodo,
+    resortTodos,
     todos
   }
 })
