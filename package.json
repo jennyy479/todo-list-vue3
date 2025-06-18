@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "ant-design-vue": "^4.0.0-rc.6",
+    "flowbite": "^3.1.2",
     "pinia": "^3.0.3",
     "vue": "^3.5.13"
   },

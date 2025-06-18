@@ -5,8 +5,12 @@
       <div class="flex pt-2 gap-2 items-center">
         <p class="text-gray-500 text-sm">{{ filterByStatus.length }} 項任務</p>
         <button
-          class="default-button focus:outline-none"
-          :class="{ 'bg-gray-200 text-gray-900': filterStatus === 'all' }"
+          :class="[
+            'default-button focus:outline-none',
+            filterStatus === 'all'
+              ? 'bg-gray-200 text-gray-900'
+              : 'bg-white text-gray-500'
+          ]"
           @click="filterStatus = 'all'"
           role="button"
         >
@@ -14,7 +18,7 @@
         </button>
         <button
           class="default-button focus:outline-none"
-          :class="{ 'bg-gray-200 text-gray-900': filterStatus === 'undone' }"
+          :class="[ filterStatus === 'undone' ? 'bg-gray-200 text-gray-900': 'bg-white text-gray-500' ]"
           @click="filterStatus = 'undone'"
           role="button"
         >
@@ -22,7 +26,7 @@
         </button>
         <button
           class="default-button focus:outline-none"
-          :class="{ 'bg-gray-200 text-gray-900': filterStatus === 'done' }"
+          :class="[ filterStatus === 'done' ? 'bg-gray-200 text-gray-900': 'bg-white text-gray-500' ]"
           @click="filterStatus = 'done'"
           role="button"
         >
@@ -38,17 +42,23 @@
         <div class="flex gap-2 flex-nowrap items-center mt-2">
           <button
             class="default-button focus:outline-none whitespace-nowrap px-3 py-2 min-w-fit"
-            :class="{ 'border-2 text-gray-900': filterStatus === 'deadline' }"
-            @click="filterStatus = 'deadline'"
+            :class="[ filterStatus === 'deadline' ? 'border-2 text-gray-900' : 'bg-white text-gray-500' ]"
             role="button"
+            @click="openDatePicker"
           >
             <i class="mdi mdi-calendar-badge-outline text-sm"></i>
             截止日期
           </button>
+          <a-date-picker
+            ref="datePickerRef"
+            v-model:value="selectedDate"
+            style="position: absolute; opacity: 0.2;"
+            @change="onDateChange"
+          />
           <button
             class="default-button focus:outline-none whitespace-nowrap px-3 py-2 min-w-fit"
-            :class="{ 'border-2 text-gray-900': filterStatus === 'priority' }"
-            @click="filterStatus = 'priority'"
+            :class="[ filterStatus === 'priority' ? 'border-2 text-gray-900': 'bg-white text-gray-500' ]"
+            @click="filterStatus === 'priority'"
             role="button"
           >
             <i class="mdi mdi-flag text-sm"></i>
@@ -56,8 +66,8 @@
           </button>
           <button
             class="default-button focus:outline-none whitespace-nowrap px-3 py-2 min-w-fit"
-            :class="{ 'border-2 text-gray-900': filterStatus === 'all' }"
-            @click="filterStatus = 'all'"
+            :class="[ filterStatus === 'more' ? 'border-2 text-gray-900': 'bg-white text-gray-500' ]"
+            @click="filterStatus === 'more'"
             role="button"
           >
           <span class="mdi mdi-dots-horizontal text-sm"></span>
@@ -124,12 +134,24 @@
 <script setup lang="ts">
 import { ref, toRefs, computed } from 'vue';
 import { useTodoStore, type TodoItem } from "../store/todoStore";
+import { onMounted } from 'vue';
 
 const newTodo = ref('');
 const todoStore = useTodoStore();
 const { resortTodos } = toRefs(todoStore);
 const today = new Date().toLocaleDateString();
 const filterStatus = ref('all')
+const selectedDate = ref('');
+const datePickerRef = ref();
+const onDateChange = () => {
+
+};
+
+const openDatePicker = () => {
+  filterStatus.value = 'deadline'
+  // 透過 ref 調用 focus 打開日期選擇器彈窗
+  datePickerRef.value && datePickerRef.value.focus()
+}
 
 const isEditMode = ref<boolean[]>([]);
 const handleAddTodo = () => {
@@ -163,4 +185,8 @@ const filterByStatus = computed(() => {
     return resortTodos.value.filter((todo) => todo.done === true)
   }
 })
+
+onMounted(() => 
+  filterStatus.value = 'all'
+)
 </script>

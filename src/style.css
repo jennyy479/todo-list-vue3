@@ -160,7 +160,6 @@ button:focus, button:focus-visible {
 }
 
 .default-button {
-  background-color: #fff;
   box-sizing: border-box;
   color: #6B7280;
   cursor: pointer;
