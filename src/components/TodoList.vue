@@ -5,7 +5,7 @@
       <div class="flex pt-2 gap-2 items-center">
         <p class="text-gray-500 text-sm">{{ filterByStatus.length }} 項任務</p>
         <button
-          class="button-13 focus:outline-none"
+          class="default-button focus:outline-none"
           :class="{ 'bg-gray-200 text-gray-900': filterStatus === 'all' }"
           @click="filterStatus = 'all'"
           role="button"
@@ -13,7 +13,7 @@
           全部
         </button>
         <button
-          class="button-13 focus:outline-none"
+          class="default-button focus:outline-none"
           :class="{ 'bg-gray-200 text-gray-900': filterStatus === 'undone' }"
           @click="filterStatus = 'undone'"
           role="button"
@@ -21,7 +21,7 @@
           待處理
         </button>
         <button
-          class="button-13 focus:outline-none"
+          class="default-button focus:outline-none"
           :class="{ 'bg-gray-200 text-gray-900': filterStatus === 'done' }"
           @click="filterStatus = 'done'"
           role="button"
@@ -30,13 +30,40 @@
         </button>
       </div>
     </div>
-    <form @submit.prevent="handleAddTodo" class="flex space-x-2 pt-4">
+    <form @submit.prevent="handleAddTodo" class="pt-4">
       <div class="input-container w-full">
-        <input placeholder="新增待辦事項" class="input-field" type="text"  v-model="newTodo" @keydown.enter="handleAddTodo">
+        <input placeholder="新增待辦事項" class="input-field" type="text" v-model="newTodo" @keydown.enter="handleAddTodo">
         <label for="input-field" class="input-label">輸入文字</label>
         <span class="input-highlight"></span>
+        <div class="flex gap-2 flex-nowrap items-center mt-2">
+          <button
+            class="default-button focus:outline-none whitespace-nowrap px-3 py-2 min-w-fit"
+            :class="{ 'border-2 text-gray-900': filterStatus === 'deadline' }"
+            @click="filterStatus = 'deadline'"
+            role="button"
+          >
+            <i class="mdi mdi-calendar-badge-outline text-sm"></i>
+            截止日期
+          </button>
+          <button
+            class="default-button focus:outline-none whitespace-nowrap px-3 py-2 min-w-fit"
+            :class="{ 'border-2 text-gray-900': filterStatus === 'priority' }"
+            @click="filterStatus = 'priority'"
+            role="button"
+          >
+            <i class="mdi mdi-flag text-sm"></i>
+            優先級
+          </button>
+          <button
+            class="default-button focus:outline-none whitespace-nowrap px-3 py-2 min-w-fit"
+            :class="{ 'border-2 text-gray-900': filterStatus === 'all' }"
+            @click="filterStatus = 'all'"
+            role="button"
+          >
+          <span class="mdi mdi-dots-horizontal text-sm"></span>
+          </button>
+        </div>
       </div>
-      
     </form>
     <ul class="space-y-2">
       <li
@@ -62,11 +89,14 @@
         </div>
         <div
           v-if="!isEditMode[todoIndex]"
-          class="cursor-pointer"
+          class="flex flex-col cursor-pointer"
           @dblclick="startEditTodo(todoIndex)"
         >
-          <span :class="{ 'line-through text-gray-400': todo.done }" class="text-gray-500">
+          <span :class="{ 'line-through text-gray-400': todo.done }" class="text-gray-500 h-auto">
             {{ todo.text }}
+          </span>
+          <span>
+            tag
           </span>
         </div>
     

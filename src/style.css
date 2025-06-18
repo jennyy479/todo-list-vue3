@@ -159,7 +159,7 @@ button:focus, button:focus-visible {
   }
 }
 
-.button-13 {
+.default-button {
   background-color: #fff;
   box-sizing: border-box;
   color: #6B7280;
@@ -179,15 +179,12 @@ button:focus, button:focus-visible {
   width: auto;
 }
 
-.button-13:hover {
+.default-button:hover {
   background-color: #f7fafa;
 }
 
-.button-13:focus {
-  background-color:  #a3a7b0;
-  color: #fff;
-  border: 1px solid #d5d9d9;
-  border-radius: 8px;
+.default-button:focus {
+  background-color: #f7fafa;
 }
 
 .input-container {
@@ -217,7 +214,7 @@ button:focus, button:focus-visible {
 
 .input-highlight {
   position: absolute;
-  bottom: 0;
+  bottom: 40.5px;
   left: 0;
   height: 2px;
   width: 0;
