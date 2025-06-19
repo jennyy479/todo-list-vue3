@@ -35,7 +35,6 @@
       </div>
     </div>
     <form @submit.prevent="handleAddTodo" class="pt-4">
-      {{ newTodo }}
       <div class="input-container w-full">
         <input placeholder="新增待辦事項" class="input-field" type="text" v-model="newTodo" @keydown.enter="handleAddTodo">
         <label for="input-field" class="input-label">輸入文字</label>
