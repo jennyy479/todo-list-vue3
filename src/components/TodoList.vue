@@ -35,43 +35,50 @@
       </div>
     </div>
     <form @submit.prevent="handleAddTodo" class="pt-4">
+      {{ newTodo }}
       <div class="input-container w-full">
         <input placeholder="新增待辦事項" class="input-field" type="text" v-model="newTodo" @keydown.enter="handleAddTodo">
         <label for="input-field" class="input-label">輸入文字</label>
         <span class="input-highlight"></span>
         <div class="flex gap-2 flex-nowrap items-center mt-2">
-          <button
-            class="default-button focus:outline-none whitespace-nowrap px-3 py-2 min-w-fit"
-            :class="[ filterStatus === 'deadline' ? 'border-2 text-gray-900' : 'bg-white text-gray-500' ]"
-            role="button"
-            @click="openDatePicker"
-          >
-            <i class="mdi mdi-calendar-badge-outline text-sm"></i>
-            截止日期
-          </button>
           <a-date-picker
             ref="datePickerRef"
             v-model:value="selectedDate"
-            style="position: absolute; opacity: 0.2;"
-            @change="onDateChange"
+            placeholder="截止日期"
+            style="font-size: 12px;color: #6B7280;"
           />
-          <button
-            class="default-button focus:outline-none whitespace-nowrap px-3 py-2 min-w-fit"
-            :class="[ filterStatus === 'priority' ? 'border-2 text-gray-900': 'bg-white text-gray-500' ]"
-            @click="filterStatus === 'priority'"
-            role="button"
-          >
-            <i class="mdi mdi-flag text-sm"></i>
-            優先級
-          </button>
-          <button
-            class="default-button focus:outline-none whitespace-nowrap px-3 py-2 min-w-fit"
-            :class="[ filterStatus === 'more' ? 'border-2 text-gray-900': 'bg-white text-gray-500' ]"
-            @click="filterStatus === 'more'"
-            role="button"
-          >
-          <span class="mdi mdi-dots-horizontal text-sm"></span>
-          </button>
+            <div class="inline-block relative">
+              <button
+                class="default-button focus:outline-none whitespace-nowrap px-3 py-2 min-w-fit"
+                :class="[
+                  filterStatus === 'priority'
+                    ? 'border-2 text-gray-900'
+                    : 'bg-white text-gray-500'
+                ]"
+                @click.prevent="toggleColorDots"
+              >
+                <i class="mdi mdi-flag text-sm mr-1"></i>
+                優先級
+              </button>
+        
+              <div
+                v-if="showColorDots"
+                class="absolute z-50 mt-2 p-2 bg-white border border-gray-300 rounded shadow flex space-x-2"
+              >
+                <div
+                  v-for="c in colorOptions"
+                  :key="c.value"
+                  class="w-4 h-4 rounded-full cursor-pointer border-2"
+                  :class="{
+                    'ring-2 ring-offset-1': color === c.value,
+                    'border-white': color !== c.value
+                  }"
+                  :style="{ backgroundColor: c.value }"
+                  @click="selectColor(c.value)"
+                  :title="c.label"
+                ></div>
+              </div>
+            </div>
         </div>
       </div>
     </form>
@@ -99,17 +106,29 @@
         </div>
         <div
           v-if="!isEditMode[todoIndex]"
-          class="flex flex-col cursor-pointer"
+          class="relative flex flex-col cursor-pointer space-y-1 items-start"
           @dblclick="startEditTodo(todoIndex)"
         >
-          <span :class="{ 'line-through text-gray-400': todo.done }" class="text-gray-500 h-auto">
+          <i
+            class="mdi mdi-flag text-sm absolute top-[2.25rem] right-[-5.25rem]"
+            :style="{ color: todo.color || '#ccc' }"
+            title="優先級"
+          ></i>
+          
+          <span
+            :class="{ 'line-through text-gray-400': todo.done }"
+            class="text-gray-500 pr-4"
+          >
             {{ todo.text }}
           </span>
-          <span>
-            tag
-          </span>
+        
+          <div v-if="todo.deadline" class="text-sm text-gray-400">
+            <i class="mdi mdi-calendar-clock-outline mr-1"></i>
+            {{ formatDate(todo.deadline) }}
+          </div>
         </div>
-    
+      
+      
         <div v-else class="flex-1">
           <input
             type="text"
@@ -143,21 +162,40 @@ const today = new Date().toLocaleDateString();
 const filterStatus = ref('all')
 const selectedDate = ref('');
 const datePickerRef = ref();
-const onDateChange = () => {
 
-};
+const showColorDots = ref(false)
+const color = ref('') // 當前選中的顏色
 
-const openDatePicker = () => {
-  filterStatus.value = 'deadline'
-  // 透過 ref 調用 focus 打開日期選擇器彈窗
-  datePickerRef.value && datePickerRef.value.focus()
+// 顏色選項
+const colorOptions = [
+  { label: '紅色', value: '#f87171' },
+  { label: '橘色', value: '#fb923c' },
+  { label: '黃色', value: '#facc15' },
+  { label: '綠色', value: '#4ade80' },
+  { label: '藍色', value: '#60a5fa' },
+  { label: '紫色', value: '#a78bfa' }
+]
+
+const toggleColorDots = () => {
+  showColorDots.value = !showColorDots.value
 }
 
+const selectColor = (selected: string) => {
+  color.value = selected
+  showColorDots.value = false
+}
+
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${date.getDate().toString().padStart(2,'0')}`
+}
 const isEditMode = ref<boolean[]>([]);
 const handleAddTodo = () => {
   if(newTodo.value.trim()) {
-    todoStore.addTodo(newTodo.value);
+    todoStore.addTodo(newTodo.value, selectedDate.value, color.value);
     newTodo.value = '';
+    filterStatus.value = 'all';
   }
 };
 

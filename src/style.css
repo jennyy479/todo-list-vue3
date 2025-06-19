@@ -56,7 +56,6 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -157,6 +156,15 @@ button:focus, button:focus-visible {
   50% {
     transform: scale(0.9);
   }
+}
+
+.ant-picker .ant-picker-input >input {
+  font-size: 12px;
+};
+
+.ant-picker:hover,
+.ant-picker-focused {
+  border: 0;
 }
 
 .default-button {
