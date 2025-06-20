@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-6 space-y-4">
+  <div class="max-w-xl mx-auto bg-white rounded-xl shadow-lg p-6 space-y-4" @keydown.enter.prevent="handleAddTodo">
     <div class="flex flex-col items-start">
       <h2 class="text-2xl font-bold text-gray-500">{{ today }}</h2>
       <div class="flex pt-2 gap-2 items-center">
@@ -34,14 +34,15 @@
         </button>
       </div>
     </div>
-    <form @submit.prevent="handleAddTodo" class="pt-4">
+    <form class="pt-4">
       <div class="input-container w-full">
         <input placeholder="新增待辦事項" class="input-field" type="text" v-model="newTodo" @keydown.enter="handleAddTodo">
         <label for="input-field" class="input-label">輸入文字</label>
         <span class="input-highlight"></span>
-        <div class="flex gap-2 flex-nowrap items-center mt-2">
+        <div class="flex gap-2 flex-nowrap items-center mt-2" @keydown.enter.prevent="handleEnter">
           <a-date-picker
             ref="datePickerRef"
+            class="custom-datepicker"
             v-model:value="selectedDate"
             placeholder="截止日期"
             style="font-size: 12px;color: #6B7280;"
@@ -54,7 +55,8 @@
                     ? 'border-2 text-gray-900'
                     : 'bg-white text-gray-500'
                 ]"
-                @click.prevent="toggleColorDots"
+                type="button"
+                @click.stop.prevent="toggleColorDots"
               >
                 <i class="mdi mdi-flag text-sm mr-1"></i>
                 優先級
@@ -109,6 +111,7 @@
           @dblclick="startEditTodo(todoIndex)"
         >
           <i
+            v-if="todo.color"
             class="mdi mdi-flag text-sm absolute top-[2.25rem] right-[-5.25rem]"
             :style="{ color: todo.color || '#ccc' }"
             title="優先級"
@@ -195,7 +198,14 @@ const handleAddTodo = () => {
     todoStore.addTodo(newTodo.value, selectedDate.value, color.value);
     newTodo.value = '';
     filterStatus.value = 'all';
+    color.value= '';
+    selectedDate.value = '';
   }
+};
+
+const handleEnter = () => {
+    datePickerRef.value?.blur?.();
+    handleAddTodo();
 };
 
 const handleRemoveTodo = (targetId: number) => {
